@@ -16,5 +16,10 @@ CHIP Mux4Way16 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /* First: Select between a&b or c&d using sel[1] */
+    Mux16(a=a, b=c, sel=sel[1], out=aORc);
+    Mux16(a=b, b=d, sel=sel[1], out=bORd);
+
+    /* Then select between a vs b or c vs d using sel[2] */
+    Mux16(a=aORc, b=bORd, sel=sel[0], out=out);
 }
