@@ -16,5 +16,9 @@ CHIP DMux4Way {
     OUT a, b, c, d;
 
     PARTS:
-    // Put your code here:
+    /* Sel[1] tells us is it ab or cd */
+    DMux(in=in, sel=sel[1], a=ab, b=cd);
+    /* Sel[0] tells us a vs b or c vs d */
+    DMux(in=ab, sel=sel[0], a=a, b=b);
+    DMux(in=cd, sel=sel[0], a=c, b=d);
 }
