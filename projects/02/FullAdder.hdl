@@ -13,5 +13,12 @@ CHIP FullAdder {
         carry;   // Left bit of a + b + c
 
     PARTS:
-    // Put you code here:
+    /* we use a HalfAdder(b,c) to get the top half of the table.*/
+    HalfAdder(a=b, b=c, sum=HASum, carry=HACarry);
+    /* Getting sum_out (the final output sum) is easy using Xor*/
+    Xor(a=a, b=HASum, out=sum);
+    /* HACarry x a + HASum */
+    And(a=a, b=HASum, out=aANDhasum);
+    Or(a=HACarry, b=aANDhasum, out=carry);
+
 }
