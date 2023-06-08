@@ -43,4 +43,39 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   /* zx */
+   Mux16(a=true, b=false, sel=zx, out=zxMux);
+   And16(a=x, b=zxMux, out=zxIN);
+   /* nx */
+   Not16(in=zxIN, out=notx);
+   Mux16(a=zxIN, b=notx, sel=nx, out=znxIN);
+
+   /* same logic for zy, ny */
+   /* zy */
+   Mux16(a=true, b=false, sel=zy, out=zyMux);
+   And16(a=y, b=zyMux, out=zyIN);
+   /* ny */
+   Not16(in=zyIN, out=noty);
+   Mux16(a=zyIN, b=noty, sel=ny, out=znyIN);
+
+   /* we also use the same pre-compute then select idea for f */
+   /*pre-compute x+y , x&y */
+   Add16(a=znxIN, b=znyIN, out=xADDy);
+   And16(a=znxIN, b=znyIN, out=xANDy);
+
+   /* select according to f */
+   Mux16(a=xANDy, b=xADDy, sel=f, out=xyout);
+
+   /* no using same ideas */
+   Not16(in=xyout, out=NOTxyout);
+   Mux16(a=xyout, b=NOTxyout, sel=no, out=out, out[15]=ngout, out[0..7] = out1, out[8..15] = out2); /*split copy output to use in future computations for the output control gates */
+   /* zr: is output == 0 */
+   Or8Way(in=out1, out=rout1);
+   Or8Way(in=out2, out=rout2);
+   Or(a=rout1, b=rout2, out=zout);
+   Not(in=zout, out=zr);
+
+   /* ng: is output < 0 */
+   And(a=ngout, b=true, out=ng);
+   
 }
