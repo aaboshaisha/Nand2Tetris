@@ -1,3 +1,6 @@
 HardwareSimulator
-tools/HardwareSimulator.sh
 *.sh
+rojects/.DS_Store
+tools/HardwareSimulator.sh
+tools/bin/Hardware Simulator.dat
+projects/02/Add16_CLA.hdl
