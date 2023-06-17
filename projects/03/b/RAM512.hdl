@@ -15,5 +15,21 @@ CHIP RAM512 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
-}
+    /* select which RAM64 gets the 1 load value based on address first 3 bits xxx */
+    DMux8Way(in=load, sel=address[6..8], a=l1, b=l2, c=l3, d=l4,
+    e=l5, f=l6, g=l7, h=l8);
+
+    /* Now send input to all 8 RAM64(s) and each its own load */
+    RAM64(in=in, out=r1, address=address[0..5], load=l1);
+    RAM64(in=in, out=r2, address=address[0..5], load=l2);
+    RAM64(in=in, out=r3, address=address[0..5], load=l3);
+    RAM64(in=in, out=r4, address=address[0..5], load=l4);
+    RAM64(in=in, out=r5, address=address[0..5], load=l5);
+    RAM64(in=in, out=r6, address=address[0..5], load=l6);
+    RAM64(in=in, out=r7, address=address[0..5], load=l7);
+    RAM64(in=in, out=r8, address=address[0..5], load=l8);
+
+    /* Now select which RAM64 register sends its output */
+    Mux8Way16(a=r1, b=r2, c=r3, d=r4, e=r5, f=r6, g=r7, h=r8, sel=address[6..8], out=out);  /* see we used
+the first 3 bits xxx because we want the output of that RAM64 chip which will be the specific register selected inside it by yyy */ 
+    }
