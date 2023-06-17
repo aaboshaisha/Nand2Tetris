@@ -15,5 +15,16 @@ CHIP RAM16K {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /* select which RAM4K gets the 1 load value based on address first 3 bits xxx */
+    DMux4Way(in=load, sel=address[12..13], a=l1, b=l2, c=l3, d=l4);
+
+    /* Now send input to all 8 RAM4K(s) and each its own load */
+    RAM4K(in=in, out=r1, address=address[0..11], load=l1);
+    RAM4K(in=in, out=r2, address=address[0..11], load=l2);
+    RAM4K(in=in, out=r3, address=address[0..11], load=l3);
+    RAM4K(in=in, out=r4, address=address[0..11], load=l4);
+
+    /* Now select which RAM4K register sends its output */
+    Mux4Way16(a=r1, b=r2, c=r3, d=r4, sel=address[12..13], out=out);
+
 }
