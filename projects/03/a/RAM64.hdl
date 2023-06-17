@@ -15,5 +15,20 @@ CHIP RAM64 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    /* select which RAM8 gets the 1 load value based on address first 3 bits xxx */
+    DMux8Way(in=load, sel=address[3..5], a=l1, b=l2, c=l3, d=l4,
+    e=l5, f=l6, g=l7, h=l8);
+
+    /* Now send input to all 8 RAM8(s) and each its own load */
+    RAM8(in=in, out=r1, address=address[0..2], load=l1);
+    RAM8(in=in, out=r2, address=address[0..2], load=l2);
+    RAM8(in=in, out=r3, address=address[0..2], load=l3);
+    RAM8(in=in, out=r4, address=address[0..2], load=l4);
+    RAM8(in=in, out=r5, address=address[0..2], load=l5);
+    RAM8(in=in, out=r6, address=address[0..2], load=l6);
+    RAM8(in=in, out=r7, address=address[0..2], load=l7);
+    RAM8(in=in, out=r8, address=address[0..2], load=l8);
+
+    /* Now select which RAM8 register sends its output */
+    Mux8Way16(a=r1, b=r2, c=r3, d=r4, e=r5, f=r6, g=r7, h=r8, sel=address[3..5], out=out); 
 }
