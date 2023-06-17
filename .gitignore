@@ -1,6 +1,4 @@
 HardwareSimulator
+*.dat
+*.pdf
 *.sh
-/Users/amralaa/Desktop/nand2tetris/projects/.DS_Store
-/Users/amralaa/Desktop/nand2tetris/tools/HardwareSimulator.sh
-/Users/amralaa/Desktop/nand2tetris/tools/bin/Hardware Simulator.dat
-/Users/amralaa/Desktop/nand2tetris/projects/02/Add16_CLA.hdl
