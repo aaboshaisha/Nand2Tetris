@@ -28,4 +28,19 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    // The address determines which chip will be used
+    // Only RAM16K and Screen have inputs. We'll send input to both 
+    // but only send load to the chip which the address specified
+
+    // Select which to send load to: RAM16K vs Screen
+    DMux(in=load, sel=address[14], a=rload, b=sload);
+    RAM16K(in=in, address=address[0..13], load=rload, out=Rout);
+    
+    // build screen and keyboard
+    Screen(in=in, address=address[0..12], load=sload, out=Sout);
+    Keyboard(out=Kout);
+
+    // Select which output to pick from the 3 chips also based on address
+    Mux4Way16(a=Rout, b=Rout, c=Sout, d=Kout, sel[1]=address[14], sel[0]=address[13], out=out);
+
 }
