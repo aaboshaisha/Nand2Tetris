@@ -40,4 +40,56 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    /* A, D, M loads / c controls => get from d1d2d3 bits in instruction iff op code = 1 (c instruction) else 0) */
+    Mux(a=true,  b=instruction[5], sel=instruction[15], out=Aload);
+    Mux(a=false, b=instruction[4], sel=instruction[15], out=Dload);
+    Mux(a=false, b=instruction[3], sel=instruction[15], out=Mload);
+    
+    /*Set input to A Register: 1.from ALU  2.from instruction  based on OP Code of incoming instruction*/ 
+    Mux16(a=instruction, b=outA, sel=instruction[15], out=IAMuxOut);
+    /* A Register is controlled by A load bit set above. */
+    ARegister(in=IAMuxOut, load=Aload, out=Aout1, out=Aout2, out[0..14]=addressM);
+
+    /* Controlling 2nd Mux16 - before ALU if C vs A instruction */
+    Mux(a=false, b=instruction[12], sel=instruction[15], out=aBit); 
+    Mux16(a=Aout1, b=inM, sel=aBit, out=AMmuxOut);
+
+    DRegister(in=outD, load=Dload, out=Dout);
+    
+    ALU(x=Dout, y=AMmuxOut, zx=instruction[11] ,nx=instruction[10] ,zy=instruction[9] ,ny=instruction[8] ,f=instruction[7] ,no=instruction[6] ,out=outA, out=outD, out=outM ,zr=zr ,ng=ng);
+
+    /* if d3(M) = 1, ALUout -> outM, writeM -> 1, else writeM -> 0, OutM ->
+    any value */
+    Mux(a=false , b=true , sel=Mload, out=writeM);
+
+    /* if c-inst; if J(j1,j2,j3,zr,ng) then load=1, else load=0
+    /*is this c-inst or a-inst */
+    Mux(a=false, b=instruction[2], sel=instruction[15], out=j1);
+    Mux(a=false, b=instruction[1], sel=instruction[15], out=j2);
+    Mux(a=false, b=instruction[0], sel=instruction[15], out=j3);
+
+    /* define positive */
+    Not(in=zr, out=nzr);
+    Not(in=ng, out=nng);
+    And(a=nzr, b=nng, out=pos);
+
+    And(a=pos, b=j3, out=c1);
+    And(a=zr, b=j2, out=c2);
+    And(a=ng, b=j1, out=c3);
+
+    Or(a=c1, b=c2, out=c1c2);
+    Or(a=c1c2, b=c3, out=c1c2c3);
+
+    Or(a=j1, b=j2, out=j1j2);
+    Or(a=j1j2, b=j3, out=j1j2j3);
+
+    And(a=c1c2c3, b=j1j2j3, out=cload);
+
+      
+
+    Mux(a=false, b=cload, sel=instruction[15], out=load);
+
+    PC(in=Aout2 ,load=load ,inc=true ,reset=reset ,out[0..14]=pc);
+
 }
+
