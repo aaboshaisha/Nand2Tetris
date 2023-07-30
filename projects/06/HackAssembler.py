@@ -8,8 +8,10 @@ comp = {'0': '0101010', '1': '0111111', '-1':'0111010', 'D':'0001100', 'A': '011
         'D&M': '1000000', 'D|M': '1010101'}
 
 dest = {"null": "000","M": "001","D": "010","A": "100",
-        "DM": "011","MD": "011", "AM": "101","AD": "110","AMD": "111", "ADM" : "111"}
-
+        "DM": "011", "MD": "011", 
+        "AM": "101", "MA": "101",
+        "AD": "110", "DA": "110",
+        "AMD": "111", "ADM": "111"}
 
 jump = {"null": "000","JGT": "001","JEQ": "010",
         "JGE": "011","JLT": "100","JNE": "101",
@@ -86,7 +88,7 @@ def compile(filename):
 
             if l.isnumeric(): # this will be A instruction
                 #print(f'{line} : This is an A instruction')
-                out.write(decToBin(int(l[0])))
+                out.write(decToBin(int(l)))
                 out.write("\n")
 
             else: # this is a symbol we need to handle
