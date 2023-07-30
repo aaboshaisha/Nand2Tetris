@@ -77,19 +77,17 @@ def compile(filename):
         line = line.strip() # remove empty spaces that cause a bug for startswith()
         # remove comments from line
         pat2 = r'//.*'
-        line = re.sub(pat2, '', line)
+        line = re.sub(pat2,'', line)
+        line = line.strip()
         
         if (line.startswith('//') or line=="" or is_label(line)): # skip comments, empty lines and labels
             continue
         
         elif line.startswith('@'): # symbol or A instruction
-            #print(f'{line} start with @')
             l = line[1:] # remove the @
 
             if l.isnumeric(): # this will be A instruction
-                #print(f'{line} : This is an A instruction')
-                out.write(decToBin(int(l)))
-                out.write("\n")
+                o = decToBin(int(l))
 
             else: # this is a symbol we need to handle
                 #print(f'{line} : This is a Symbol')
@@ -97,10 +95,8 @@ def compile(filename):
                     symbolTable[l] = last_added
                     last_added += 1
                 
-                t = decToBin(symbolTable[l])
+                o = decToBin(symbolTable[l])
 
-                out.write(t)
-                out.write("\n")
                     
         else: # C-inst: 3 cases: 1- dest=comp;jump 2- dest=comp 3- comp;jump
             #print(f'{line} : This is a C instruction')
@@ -112,10 +108,14 @@ def compile(filename):
             else:
                 cmp, jmp = mult_split(line)
                 dst = "null"
+            o = f'111{comp[cmp] + dest[dst] + jump[jmp]}'
 
-            out.write(f'111{comp[cmp] + dest[dst] + jump[jmp]}')
-            out.write("\n")
+        #print(f'{line} : {o}')
+        out.write(o)
+        out.write("\n")
     out.close()
+
+
 
 
 def main(args):
