@@ -30,7 +30,7 @@ def first_pass(f):
     
     n = 0 #start line numbers
     for line in f:
-        pat = r'\(\w+\)' # find label declarations using regex
+        pat = r'\(.+\)' # find label declarations using regex
         m = re.findall(pat, line)
         
         if (line.startswith('//') or line==""):
@@ -66,7 +66,7 @@ def compile(filename):
     first_pass(f) # run first pass to get numbers for labels
     
     def is_label(line):
-        pat = r'\(\w+\)' # find label declarations using regex
+        pat = r'\(.+\)' # find label declarations using regex
         m = re.findall(pat, line)
         if m:
             return True
